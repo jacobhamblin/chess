@@ -1,3 +1,5 @@
+require_relative 'piece.rb'
+
 class Pawn < Piece
   DIAGONALS_UP = [[-1,1], [1,1]]
   UP = [0,1]

@@ -1,3 +1,5 @@
+require_relative 'piece.rb'
+
 class SlidingPiece < Piece
   DIAGONALS = [[1,1],[1,-1],[-1,1],[-1,-1]]
   ORTHOGONALS = [[1,0],[0,1],[-1,0],[0,-1]]

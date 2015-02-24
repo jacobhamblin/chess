@@ -1,18 +1,14 @@
 class Piece
-  attr_reader :color, :position
+  attr_reader :color, :position, :symbol
 
   def initialize(options)
     @position = options[:position]
-    @symbol = options[:symbol]
+    @symbol = NotImplementedError.new
     @color = options[:color]
     @board = options[:board]
   end
 
   def moves
-    raise NotImplementedError.new
-  end
-
-  def symbol
     raise NotImplementedError.new
   end
 
