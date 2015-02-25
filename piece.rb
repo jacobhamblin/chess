@@ -36,8 +36,15 @@ class Piece
     end
   end
 
+  def move_into_check(pos)
+    possible_board = @board.deep_dup
+    possible_board.move(@position,pos)
+
+    possible_board.in_check?(@color)
+  end
+
   def deep_dup
-    options = {position: @position, symbol: @symbol, color: @color, board: @board}
+    options = {position: @position.dup, symbol: @symbol, color: @color, board: nil}
 
     self.class.new(options)
   end

@@ -88,6 +88,25 @@ class Board
     piece.has_moved = true if piece.is_a?(Pawn)
   end
 
+  def deep_dup
+    new_grid = []
+    new_board = Board.new({grid: new_grid})
+    @grid.each do |row|
+      new_grid << [].tap do |new_row|
+        row.each do |space|
+          if space.nil?
+            new_row << nil
+          else
+            new_space = space.deep_dup
+            new_space.board = new_board
+            new_row << new_space
+          end
+        end
+      end
+    end
+
+  end
+
   private
   def populate
     pawn_array = [].tap {|array| 8.times {|x| array << [x,1]}}
@@ -109,26 +128,6 @@ class Board
       end
     end
   end
-
-  public
-  def deep_dup
-    new_grid = []
-    @grid.each do |row|
-      new_grid << [].tap do |new_row|
-        row.each do |space|
-          if space.nil?
-            new_row << nil
-          else
-            new_row << space.deep_dup
-          end
-        end
-      end
-    end
-
-    Board.new({grid: new_grid})
-  end
-
-
 end
 
 # b = Board.new
