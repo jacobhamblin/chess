@@ -1,15 +1,17 @@
 require_relative './pieces.rb'
 #require 'byebug'
 
+class InvalidMoveException < ArgumentError; end
+
 class Board
   attr_reader :grid
 
-  def initialize
-    @grid = Array.new(8) { Array.new(8) }
-    @black_king = nil
-    @white_king = nil
+  def initialize(options = {})
+    @grid = options[:grid] || Array.new(8) { Array.new(8) }
+    @black_king = options[:black_king]
+    @white_king = options[:white_king]
 
-    populate
+    populate unless options[:grid]
   end
 
   def in_bounds?(posn)
@@ -74,6 +76,18 @@ class Board
     accumulator_string
   end
 
+  def move(start, end_pos)
+    piece = self[*start]
+    raise InvalidMoveException.new("No piece at that location") if piece.nil?
+    raise InvalidMoveException.new("That piece can't move there") unless piece.valid_move?(end_pos)
+
+    self[*end_pos] = piece
+    self[*start] = nil
+    piece.position = end_pos
+
+    piece.has_moved = true if piece.is_a?(Pawn)
+  end
+
   private
   def populate
     pawn_array = [].tap {|array| 8.times {|x| array << [x,1]}}
@@ -95,6 +109,26 @@ class Board
       end
     end
   end
+
+  public
+  def deep_dup
+    new_grid = []
+    @grid.each do |row|
+      new_grid << [].tap do |new_row|
+        row.each do |space|
+          if space.nil?
+            new_row << nil
+          else
+            new_row << space.deep_dup
+          end
+        end
+      end
+    end
+
+    Board.new({grid: new_grid})
+  end
+
+
 end
 
 # b = Board.new

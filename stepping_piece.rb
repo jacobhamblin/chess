@@ -4,10 +4,7 @@ class SteppingPiece < Piece
   def moves
     possible_moves = []
     steps.each do |step|
-      potential_posn = stepped_position(step)
-      if valid_move?(potential_posn)
-        possible_moves << potential_posn
-      end
+      possible_moves << stepped_position(step)
     end
     
     possible_moves

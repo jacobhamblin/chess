@@ -10,9 +10,7 @@ class SlidingPiece < Piece
     move_dirs.each do |dir|
       8.times do |n|
         potential_posn = slid_position(dir,n)
-        if valid_move?(potential_posn)
-          possible_moves << potential_posn
-        end
+        possible_moves << potential_posn
         unless keep_looking?(potential_posn)
           break
         end

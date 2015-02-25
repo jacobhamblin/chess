@@ -2,8 +2,9 @@ require 'byebug'
 
 class Piece
   attr_reader :color, :position, :symbol
+  attr_writer :position
 
-  def initialize(options)
+  def initialize(options = {})
     @position = options[:position]
     @symbol = NotImplementedError.new
     @color = options[:color]
@@ -14,9 +15,10 @@ class Piece
     raise NotImplementedError.new
   end
 
-  private
   def valid_move?(cand_square)
-    if !@board.in_bounds?(cand_square)
+    if !moves.include?(cand_square)
+      return false
+    elsif !@board.in_bounds?(cand_square)
       return false #out of the inner 'times' loop
     elsif @board.occupied?(cand_square)
       #debugger
@@ -33,4 +35,11 @@ class Piece
       return true
     end
   end
+
+  def deep_dup
+    options = {position: @position, symbol: @symbol, color: @color, board: @board}
+
+    self.class.new(options)
+  end
+
 end

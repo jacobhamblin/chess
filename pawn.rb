@@ -8,6 +8,8 @@ class Pawn < Piece
   DOWN = [0,-1]
   DOWN_TWO = [0,-2]
 
+  attr_accessor :has_moved
+
   def initialize(options)
     super
     @symbol = :P
@@ -34,7 +36,7 @@ class Pawn < Piece
         possible_spaces << forward_two
       end
     end
-    
+
     possible_spaces
   end
 
@@ -61,4 +63,10 @@ class Pawn < Piece
      @position[1]+step[1]]
   end
 
+  def deep_dup
+    almost_dup = super
+    almost_dup.has_moved = @has_moved
+
+    almost_dup
+  end
 end
