@@ -1,3 +1,5 @@
+require 'byebug'
+
 class Piece
   attr_reader :color, :position, :symbol
 
@@ -17,11 +19,12 @@ class Piece
     if !@board.in_bounds?(cand_square)
       return false #out of the inner 'times' loop
     elsif @board.occupied?(cand_square)
-      piece_color = whats_here(cand_square).color
+      #debugger
+      piece_color = @board.whats_here(cand_square).color
       case piece_color
-      when piece_color == @color
+      when @color
         return false
-      when piece_color != @color
+      when @color == :white ? (:black) : (:white)
         return true
       else
         raise TypeError("Piece color is misbehaving")

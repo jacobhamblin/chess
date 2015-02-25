@@ -9,6 +9,8 @@ class SteppingPiece < Piece
         possible_moves << potential_posn
       end
     end
+    
+    possible_moves
   end
 
   def steps
@@ -22,11 +24,11 @@ class SteppingPiece < Piece
 end
 
 class King < SteppingPiece
-  ONE_STEP_EACH_WAY =   [[1,1],[1,-1],[-1,1],[-1,-1], [1,0],[0,1],[-1,0],[0,-1]]
+  ONE_STEP_EACH_WAY = [[1,1], [1,-1], [-1,1], [-1,-1], [1,0], [0,1], [-1,0], [0,-1]]
 
-  def initialize
-    @symbol = :K
+  def initialize(options)
     super
+    @symbol = :K
   end
 
   def steps
@@ -35,9 +37,10 @@ class King < SteppingPiece
 end
 
 class Knight < SteppingPiece
-  KNIGHT_JUMP_EACH_WAY = [[2,1],[1,2],[-2,1],[-1,2], [-2,-1],[-1,-2], [2,-1], [1,-2]]
+  KNIGHT_JUMP_EACH_WAY = [[2,1], [1,2], [-2,1], [-1,2], [-2,-1], [-1,-2], [2,-1], [1,-2]]
 
-  def initialize
+  def initialize(options)
+    super
     @symbol = :N
   end
 
