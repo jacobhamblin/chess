@@ -6,8 +6,8 @@ class SteppingPiece < Piece
     steps.each do |step|
       possible_moves << stepped_position(step)
     end
-    
-    possible_moves
+
+    possible_moves.keep_if { |m| possible_move?(m) }
   end
 
   def steps

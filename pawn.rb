@@ -1,12 +1,12 @@
 require_relative 'piece.rb'
 
 class Pawn < Piece
-  DIAGONALS_UP = [[-1,1], [1,1]]
-  UP = [0,1]
-  UP_TWO = [0,2]
-  DIAGONALS_DOWN = [[-1,-1], [1,-1]]
-  DOWN = [0,-1]
-  DOWN_TWO = [0,-2]
+  DIAGONALS_UP = [[-1,-1], [1,-1]]
+  UP = [0,-1]
+  UP_TWO = [0,-2]
+  DIAGONALS_DOWN = [[-1,1], [1,1]]
+  DOWN = [0,1]
+  DOWN_TWO = [0,2]
 
   attr_accessor :has_moved
 
@@ -30,14 +30,14 @@ class Pawn < Piece
 
     possible_spaces += captures
 
-    if !@board.occupied?(forward_one) &&
+    if !@board.occupied?(forward_one)
       possible_spaces << forward_one
       if !@has_moved && !@board.occupied?(forward_two)
         possible_spaces << forward_two
       end
     end
 
-    possible_spaces
+    possible_spaces.keep_if { |m| @board.in_bounds?(m) }
   end
 
   def captures

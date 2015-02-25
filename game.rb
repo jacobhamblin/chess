@@ -1,5 +1,5 @@
 class Game
 end
 
-class Player
+class HumanPlayer
 end

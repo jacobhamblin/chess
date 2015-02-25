@@ -8,7 +8,7 @@ class SlidingPiece < Piece
   def moves
     possible_moves = []
     move_dirs.each do |dir|
-      8.times do |n|
+      (1..7).each do |n|
         potential_posn = slid_position(dir,n)
         possible_moves << potential_posn
         unless keep_looking?(potential_posn)
@@ -17,7 +17,7 @@ class SlidingPiece < Piece
       end
     end
 
-    possible_moves
+    possible_moves.keep_if { |m| possible_move?(m) }
   end
 
   def move_dirs
