@@ -72,13 +72,16 @@ class Board
   end
 
   def render
-    accumulator_string = ""
-    @grid.each do |row|
+    accumulator_string = "  "
+    @grid.first.each_index {|index| accumulator_string << "#{index} "}
+    accumulator_string << "\n"
+    @grid.each_with_index do |row, index|
+      accumulator_string << "#{index} "
       row.each do |space|
         if space.nil?
-          accumulator_string << " "
+          accumulator_string << "  "
         else
-          accumulator_string << space.symbol.to_s
+          accumulator_string << "#{space.symbol.to_s} "
         end
       end
       accumulator_string << "\n"
@@ -171,17 +174,11 @@ end
 def setup_checkmate
   b = Board.new
 
-  b.move([5,1],[5,2])
-  b.move([4,6],[4,4])
-  b.move([6,1],[6,3])
-  b.move([3,7],[7,3])
+  b.move([5,6],[5,5])
+  b.move([4,1],[4,3])
+  b.move([6,6],[6,4])
+  b.move([3,0],[7,4])
   puts b.render
 
   b
-end
-
-if __FILE__ == $PROGRAM_NAME
-
-elsif 'pry' == $PROGRAM_NAME
-  b = setup_checkmate
 end
