@@ -1,5 +1,5 @@
-require_relative './piece.rb'
-require_relative './board.rb'
+# require_relative './piece.rb'
+# require_relative './board.rb'
 
 class SlidingPiece < Piece
   DIAGONALS = [[1,1],[1,-1],[-1,1],[-1,-1]]
@@ -39,7 +39,7 @@ end
 class Bishop < SlidingPiece
   def initialize(options)
     super
-    @symbol = :B
+    @symbol = (@color == :black) ? :♝ : :♗
   end
 
   def move_dirs
@@ -50,7 +50,7 @@ end
 class Rook < SlidingPiece
   def initialize(options)
     super
-    @symbol = :R
+    @symbol = (@color == :black) ? :♜ : :♖
   end
 
   def move_dirs
@@ -61,7 +61,7 @@ end
 class Queen < SlidingPiece
   def initialize(options)
     super
-    @symbol = :Q
+    @symbol = (@color == :black) ? :♛ : :♕
   end
 
   def move_dirs

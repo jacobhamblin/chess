@@ -1,10 +1,10 @@
 require_relative './board.rb'
+require 'socket'
+require 'json'
 
 class Game
   def initialize
     @board = Board.new
-    # @player1 = HumanPlayer.new(color: :white)
-    # @player2 = HumanPlayer.new(color: :black)
   end
 
   def display
@@ -12,7 +12,8 @@ class Game
   end
 
   def play
-    current_player  = :white
+    current_player = :white
+
     loop do
       puts "\ec"
       if @board.checkmate?(current_player)
@@ -30,6 +31,7 @@ class Game
 
   def play_turn(color)
     display
+    puts "White is at the bottom of the board and plays first."
     puts "Give coordinates for the piece to be moved. (x,y)"
     from_coordinates = gets.chomp.split(",").map(&:strip).map(&:to_i)
     puts "Give coordinates for the position it should move to. (x,y)"
@@ -41,18 +43,20 @@ class Game
   rescue InvalidMoveException => e
     puts "Invalid Move: #{e.to_s}"
     retry
+
+  rescue ArgumentError => e
+    puts "Badly formed coordinate; Provide your coordinate formatted x,y"
+    retry
   end
 
   def my_piece?(color, coordinates)
-    unless !@board[*coordinates].nil? && @board[*coordinates].color == color
+    unless @board.occupied?(coordinates) && @board.whats_here(coordinates).color == color
       raise InvalidMoveException.new("This space does not have one of your pieces!")
     else
       true
     end
   end
-
 end
-
 
 if __FILE__ == $PROGRAM_NAME
   g = Game.new

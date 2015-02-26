@@ -12,7 +12,7 @@ class Pawn < Piece
 
   def initialize(options)
     super
-    @symbol = :P
+    @symbol = (color == :black) ? :♟ : :♙
     @has_moved = false
   end
 

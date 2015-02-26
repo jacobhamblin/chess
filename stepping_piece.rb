@@ -25,7 +25,7 @@ class King < SteppingPiece
 
   def initialize(options)
     super
-    @symbol = :K
+    @symbol = (color == :black) ? :♚ : :♔
   end
 
   def steps
@@ -38,7 +38,7 @@ class Knight < SteppingPiece
 
   def initialize(options)
     super
-    @symbol = :N
+    @symbol = (color == :black) ? :♞ : :♘
   end
 
   def steps

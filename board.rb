@@ -1,11 +1,15 @@
 require_relative './pieces.rb'
-#require 'byebug'
+require 'colorize'
 
 class InvalidMoveException < ArgumentError; end
+
+
 
 class Board
   attr_reader :grid
   attr_accessor :black_king, :white_king
+
+  PIECE_ROW = [Rook, Knight, Bishop, Queen, King, Bishop, Knight, Rook]
 
   def initialize(options = {})
     @grid = options[:grid] || Array.new(8) { Array.new(8) }
@@ -40,12 +44,7 @@ class Board
   def in_check?(color)
     king = (color == :black ) ? @black_king : @white_king
     enemy_pawns = []
-    @grid.flatten.compact.each do |piece|
-      next if piece.color == color
-      if piece.is_a?(Pawn)
-        enemy_pawns << piece
-        next
-      end
+    colors((color == :black ) ? :white : :black).each do |piece|
       piece.moves.each do |space|
         if self[*space] == king
           return true
@@ -53,42 +52,54 @@ class Board
       end
     end
 
-    enemy_pawns.each do |pawn|
-      return true if pawn.captures.any? { |space| self[*space] == king }
-    end
-
     false
   end
 
   def checkmate?(color)
     return false unless in_check?(color)
-    colors(color).each do |piece|
-      return false if piece.moves.any? {|move| piece.valid_move?(move)}
-
-      # return false if piece.moves.any? {|move| piece.valid_move?(move)}
+    colors(color).any? do |piece|
+      piece.moves.any? {|move| piece.valid_move?(move)}
     end
 
     true
   end
 
   def render
-    accumulator_string = "  "
-    @grid.first.each_index {|index| accumulator_string << "#{index} "}
-    accumulator_string << "\n"
+    accumulator_string = horizontal_coordinate_line
+
     @grid.each_with_index do |row, index|
       accumulator_string << "#{index} "
-      row.each do |space|
+      row.each_with_index do |space, horizontal_index|
         if space.nil?
-          accumulator_string << "  "
+          accumulator_string << color_background("  ",index, horizontal_index)
         else
-          accumulator_string << "#{space.symbol.to_s} "
+          accumulator_string << color_background("#{space.symbol.to_s} ",index, horizontal_index)
         end
       end
       accumulator_string << "\n"
     end
+    accumulator_string << horizontal_coordinate_line
+
 
     accumulator_string
   end
+
+  def horizontal_coordinate_line
+    accumulator_string = "  "
+    @grid.first.each_index {|index| accumulator_string << "#{index} "}
+    accumulator_string << "\n"
+
+    accumulator_string
+   end
+
+   def color_background(string,row,column)
+     case (row+column)%2
+     when 0
+       string.colorize(:color => :black, :background => :light_white)
+     when 1
+       string.colorize(:color => :black, :background => :white)
+     end
+   end
 
   def move(start, end_pos)
     piece = self[*start]
@@ -105,21 +116,22 @@ class Board
     piece.position = end_pos
 
     piece.has_moved = true if piece.is_a?(Pawn)
+
+    true
   end
 
   def deep_dup
     new_grid = []
     new_board = Board.new({grid: new_grid})
     @grid.each do |row|
-      new_grid << [].tap do |new_row|
-        row.each do |space|
-          if space.nil?
-            new_row << nil
-          else
-            new_space = space.deep_dup
-            new_space.board = new_board
-            new_row << new_space
-          end
+      new_grid << row.map do |piece|
+        if piece.nil?
+          nil
+        else
+          new_piece = piece.deep_dup
+          new_piece.board = new_board
+
+          new_piece
         end
       end
     end
@@ -135,39 +147,25 @@ class Board
 
   private
   def populate
-    populate_bottom()
-    populate_top()
+    populate_part(:white,7,6)
+    populate_part(:black,0,1)
 
-    @white_king = self[4,7]
-    @black_king = self[4,0]
+    @white_king = colors(:white).find {|piece| piece.class == King}
+    @black_king = colors(:black).find {|piece| piece.class == King}
   end
 
-  def populate_top()
-    color = :black
-    pawn_array = [].tap {|array| 8.times {|x| array << [x,1]}}
-    piece_hash = {Pawn: pawn_array, Rook: [[0,0], [7,0]], Knight: [[1,0], [6,0]], Bishop: [[2,0], [5,0]], Queen: [[3,0]], King: [[4,0]] }
 
-    piece_hash.keys.each do |piece_type|
-      piece_hash[piece_type].each do |posn|
-        #debugger
-        self[*posn] = Object.const_get(piece_type.to_s).new({color: color, board: self, position: posn})
-      end
+  def populate_part(color, piece_row_index, pawn_row_index)
+    pawn_row = [].tap {|array| 8.times {|x| array << [x,pawn_row_index]}}.map {|posn| Pawn.new({color: color, board: self, position: posn, has_moved: false})}
+    piece_row = []
+
+    PIECE_ROW.each_with_index do |piece, piece_index|
+      piece_row << piece.new({color: color, board: self, position: [piece_index, piece_row_index]})
     end
+
+    self.grid[piece_row_index] = piece_row
+    self.grid[pawn_row_index] = pawn_row
   end
-
-  def populate_bottom()
-    color = :white
-    pawn_array = [].tap {|array| 8.times {|x| array << [x,6]}}
-    piece_hash = {Pawn: pawn_array, Rook: [[0,7], [7,7]], Knight: [[1,7], [6,7]], Bishop: [[2,7], [5,7]], Queen: [[3,7]], King: [[4,7]] }
-
-    piece_hash.keys.each do |piece_type|
-      piece_hash[piece_type].each do |posn|
-        #debugger
-        self[*posn] = Object.const_get(piece_type.to_s).new({color: color, board: self, position: posn})
-      end
-    end
-  end
-
 
 end
 
