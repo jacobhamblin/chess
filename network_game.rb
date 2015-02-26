@@ -27,8 +27,10 @@ class NetworkGame < Game
       if @our_turn
         puts "\ec"
         if @board.checkmate?(@our_color)
-          puts "Checkmate! #{@our_color.to_s.capitalize} loses.\n\n"
+          checkmate_string = "Checkmate! #{@our_color.to_s.capitalize} loses.\n\n"
+          puts checkmate_string
           display
+          @connection.puts checkmate_string
           break
         elsif @board.in_check?(@our_color)
           display
@@ -40,6 +42,10 @@ class NetworkGame < Game
         @our_turn = false
       else
         move_made = read_message(@connection.gets.chomp)
+        unless move_made.class == Array
+          puts move_made
+          break
+        end
         @our_turn = play_opponents_turn(move_made)
       end
 
@@ -52,6 +58,8 @@ class NetworkGame < Game
 
   def read_message(string)
     JSON.parse(string)
+  rescue
+    return string
   end
 
   def play_opponents_turn(posn_pair)
