@@ -64,16 +64,24 @@ class Board
     true
   end
 
-  def render
+  def render(highlight_from = nil, highlight_to = nil)
     accumulator_string = horizontal_coordinate_line
 
     @grid.each_with_index do |row, index|
       accumulator_string << "#{index} "
       row.each_with_index do |space, horizontal_index|
-        if space.nil?
-          accumulator_string << color_background("  ",index, horizontal_index)
+        unless [index, horizontal_index] == highlight_from || [index, horizontal_index] == highlight_to
+          if space.nil?
+            accumulator_string << color_background("  ",index, horizontal_index)
+          else
+            accumulator_string << color_background("#{space.symbol.to_s} ",index, horizontal_index)
+          end
         else
-          accumulator_string << color_background("#{space.symbol.to_s} ",index, horizontal_index)
+          if space.nil?
+            accumulator_string << color_background("  ",index, horizontal_index, true)
+          else
+            accumulator_string << color_background("#{space.symbol.to_s} ",index, horizontal_index, true)
+          end
         end
       end
       accumulator_string << "\n"
@@ -92,14 +100,18 @@ class Board
     accumulator_string
    end
 
-   def color_background(string,row,column)
-     case (row+column)%2
-     when 0
-       string.colorize(:color => :black, :background => :light_white)
-     when 1
-       string.colorize(:color => :black, :background => :white)
-     end
-   end
+   def color_background(string,row,column,highlight = false)
+    if highlight == true
+      string.colorize(:color => :black, :background => :light_cyan)
+    else
+       case (row+column)%2
+       when 0
+         string.colorize(:color => :black, :background => :light_white)
+       when 1
+         string.colorize(:color => :black, :background => :white)
+       end
+    end
+  end
 
   def move(start, end_pos)
     piece = self[*start]

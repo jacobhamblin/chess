@@ -15,6 +15,10 @@ class NetworkGame < Game
   end
 
   def play
+    puts "\ec"
+    puts "\nwhite plays first.\n\n"
+    sleep(2)
+    puts "\ec"
     if @server.nil?
       @our_color = :black
       @our_turn = false
@@ -23,10 +27,6 @@ class NetworkGame < Game
       @our_turn = true
     end
 
-    puts "\ec"
-    puts "\nwhite plays first.\n\n"
-    sleep(2)
-    puts "\ec"
     loop do
       if @our_turn
         puts "\ec"
@@ -41,7 +41,6 @@ class NetworkGame < Game
           puts "\n#{@our_color.to_s.capitalize} is in check!"
         end
         move_made = play_turn(@our_color)
-        puts "\ec"
         display
         @connection.puts send_message(move_made)
         @our_turn = false
