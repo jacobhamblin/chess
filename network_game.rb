@@ -23,6 +23,10 @@ class NetworkGame < Game
       @our_turn = true
     end
 
+    puts "\ec"
+    puts "\nwhite plays first.\n\n"
+    sleep(2)
+    puts "\ec"
     loop do
       if @our_turn
         puts "\ec"
@@ -37,6 +41,7 @@ class NetworkGame < Game
           puts "\n#{@our_color.to_s.capitalize} is in check!"
         end
         move_made = play_turn(@our_color)
+        puts "\ec"
         display
         @connection.puts send_message(move_made)
         @our_turn = false
@@ -82,8 +87,7 @@ class NetworkGame < Game
   def play_turn(color)
   begin
     display
-    puts "White is at the bottom of the board and plays first."
-    puts "Give coordinates for the piece to be moved. (x,y)"
+    puts "\nGive coordinates for the piece to be moved. (x,y)"
     from_coordinates = gets.chomp.split(",").map(&:strip).map(&:to_i)
     puts "Give coordinates for the position it should move to. (x,y)"
     to_coordinates = gets.chomp.split(",").map(&:strip).map(&:to_i)

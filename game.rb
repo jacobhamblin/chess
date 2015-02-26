@@ -13,9 +13,11 @@ class Game
 
   def play
     current_player = :white
-
+    puts "\ec"
+    puts "\nwhite plays first.\n\n"
+    sleep(2)
+    puts "\ec"
     loop do
-      puts "\ec"
       if @board.checkmate?(current_player)
         puts "Checkmate! #{current_player.to_s.capitalize} loses.\n\n"
         display
@@ -31,8 +33,7 @@ class Game
 
   def play_turn(color)
     display
-    puts "White is at the bottom of the board and plays first."
-    puts "Give coordinates for the piece to be moved. (x,y)"
+    puts "\nGive coordinates for the piece to be moved. (x,y)"
     from_coordinates = gets.chomp.split(",").map(&:strip).map(&:to_i)
     puts "Give coordinates for the position it should move to. (x,y)"
     to_coordinates = gets.chomp.split(",").map(&:strip).map(&:to_i)
