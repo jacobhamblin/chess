@@ -1,6 +1,12 @@
 # chess
 basic text-based functional duplicate
 
+## Features
+
+* Utilizes multiple levels of class inheritance to keep code DRY
+* Allows players to move pieces by navigating  game board with a-w-s-d keys
+* Supports networked and local play
+
 ###network play!
 
 ![network play preview](./network_play.jpg)
